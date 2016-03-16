@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
  * Created by Bikash on 3/14/2016.
  */
 @Component
-public class ReceiverOne {
+public class ReceiverOneDurable {
 
 
     /**
      * When you receive a message, print it out, then shut down the application.
      * Finally, clean up any ActiveMQ server stuff.
      */
-    @JmsListener(destination = "simpleTopic")
+    @JmsListener(destination = "simpleTopic", containerFactory = "durableJmsContainerFactory")
     public void receiveMessage(String message) {
         System.out.println(this.getClass().getName() + " Received <" + message + ">");
     }
