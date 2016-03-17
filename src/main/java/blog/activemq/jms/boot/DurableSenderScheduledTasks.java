@@ -10,10 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Session;
+import javax.jms.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,25 +23,18 @@ public class DurableSenderScheduledTasks {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Autowired
-    ConfigurableApplicationContext context;
-
-    @Autowired
     private JmsTemplate jmsTemplate;
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 2500)
     public void reportCurrentTime() {
 
         jmsTemplate.send("simpleTopic", new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
-                return session.createTextMessage("Durable Message sent at " + dateFormat.format(new Date()));
+                TextMessage textMessage = session.createTextMessage("Durable Message sent at " + dateFormat.format(new Date()));
+                textMessage.setJMSCorrelationID("cid001");
+                return textMessage;
             }
         });
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        ConnectionFactory  connectionFactory = (ConnectionFactory) context.getBean(ConnectionFactory.class);
-        jmsTemplate.setConnectionFactory(connectionFactory);
     }
 }

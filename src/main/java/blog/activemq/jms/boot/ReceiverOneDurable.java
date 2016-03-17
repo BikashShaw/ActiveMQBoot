@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class ReceiverOneDurable {
 
 
+
     /**
      * When you receive a message, print it out, then shut down the application.
      * Finally, clean up any ActiveMQ server stuff.
