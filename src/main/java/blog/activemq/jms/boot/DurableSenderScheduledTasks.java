@@ -28,13 +28,10 @@ public class DurableSenderScheduledTasks {
     @Scheduled(fixedRate = 2500)
     public void reportCurrentTime() {
 
-        jmsTemplate.send("simpleTopic", new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                TextMessage textMessage = session.createTextMessage("Durable Message sent at " + dateFormat.format(new Date()));
-                textMessage.setJMSCorrelationID("cid001");
-                return textMessage;
-            }
+        jmsTemplate.send("simpleTopic", session -> {
+            TextMessage textMessage = session.createTextMessage("Durable Message sent at " + dateFormat.format(new Date()));
+            textMessage.setJMSCorrelationID("cid001");
+            return textMessage;
         });
     }
 }
